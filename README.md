@@ -1,7 +1,10 @@
-# Proyecto Cloud Native II
+# Proyecto Cloud Native II [Grupo 3]
 
-Este proyecto gestiona un inventario de productos utilizando una arquitectura de microservicios
-con Azure Functions y un Backend-for-Frontned que los dispara vía request HTTP.
+Este proyecto gestiona un inventario de productos utilizando una arquitectura de funciones servrless
+con Azure Functions y un microservicio de Backend-for-Frontned que los convoca vía request HTTP.
+Las Azure Functions son la conexión con la base de datos Postgres SQL para la operaciones _CRUD_
+sobre el modelo de datos. La conexión con la BBDD fue realizada utilizando JDBC en cada Azure
+Function.
 
 ### Integrantes:
 
