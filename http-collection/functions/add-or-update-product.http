@@ -1,0 +1,22 @@
+### POST add product
+POST {{host_fn2}}/api/update-product?action=add
+Content-Type: "application/json"
+
+{
+    "marca": "Soprole",
+    "nombreProducto": "Leche Cultivada 2.5L Chirimoya",
+    "precio": 1992,
+    "categoria": "b385b7f2-a2d9-4f9f-bccc-e27f54f3a2e2"
+}
+
+
+### POST update product
+POST {{host_fn2}}/api/update-product?action=update
+Content-Type: "application/json"
+
+{
+    "id": "cfb5783e-371f-46a2-9a07-db7a7fb6588f",
+    "precio": 998
+}
+
+###

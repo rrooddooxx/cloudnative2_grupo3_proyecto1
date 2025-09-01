@@ -1,0 +1,4 @@
+### DELETE delete-product
+DELETE {{host_fn3}}/api/delete-product/c787fb96-5bf0-405b-9137-fec5288fbbb9
+
+###

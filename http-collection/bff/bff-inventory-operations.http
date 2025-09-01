@@ -1,0 +1,27 @@
+### GET obtener todos los productos
+GET {{host_bff}}/api/v1/inventory/products
+
+### GET obtener producto por id
+GET {{host_bff}}/api/v1/inventory/products/590803c9-373e-45e2-9564-6283f13985de
+
+### POST crear nuevo producto
+POST {{host_bff}}/api/v1/inventory/products/add
+Content-Type: application/json
+
+{
+  "marca": "Soprole",
+  "nombreProducto": "Leche Cultivada 1.5L Damasco",
+  "precio": 920,
+  "categoria": "b385b7f2-a2d9-4f9f-bccc-e27f54f3a2e2"
+}
+
+### PATCH editar precio de un producto por id
+PATCH {{host_bff}}/api/v1/inventory/products/update-price/590803c9-373e-45e2-9564-6283f13985de
+Content-Type: application/json
+
+{
+  "precio": 999
+}
+
+### DELETE eliminar producto por id
+DELETE {{host_bff}}/api/v1/inventory/products/590803c9-373e-45e2-9564-6283f13985de

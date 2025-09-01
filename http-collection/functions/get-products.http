@@ -1,0 +1,5 @@
+### GET get-products
+GET {{host_fn1}}/api/get-products
+
+
+###

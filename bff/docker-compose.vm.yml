@@ -1,0 +1,12 @@
+services:
+  bff:
+    image: widew3b/cn2g3-bff:v1
+    ports:
+      - "8080:8080"
+    restart: always
+    networks:
+      - bff
+
+networks:
+  bff:
+    driver: bridge

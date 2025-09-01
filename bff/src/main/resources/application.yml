@@ -1,0 +1,7 @@
+spring:
+  application:
+    name: "bff"
+azure-functions:
+  fn1_host: "https://cn2-g3-crudfn-1-fjeqdcb0bve3hha4.eastus2-01.azurewebsites.net"
+  fn2_host: "https://cn2-g3-crudfn-2-fff4g4b4endsdubu.eastus2-01.azurewebsites.net"
+  fn3_host: "https://cn2-g3-crudfn-3b-f6e6e6aceeczffd5.eastus2-01.azurewebsites.net"
