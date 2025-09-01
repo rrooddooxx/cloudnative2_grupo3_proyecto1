@@ -52,7 +52,8 @@ public class HttpTriggerFunction {
                     newProduct.marca(),
                     newProduct.nombreProducto(),
                     newProduct.precio(),
-                    newProduct.categoria()));
+                    newProduct.categoria()),
+                newProduct.bodegaId());
 
         return request
             .createResponseBuilder(HttpStatus.CREATED)

@@ -1,5 +1,6 @@
 package com.cn2g3;
 
+import com.cn2g3.product.model.Bodega;
 import com.cn2g3.product.model.Product;
 import com.cn2g3.product.repository.ProductsRepository;
 import com.cn2g3.utils.JsonUtils;
@@ -28,11 +29,21 @@ public class HttpTriggerFunction {
           HttpRequestMessage<Optional<String>> request,
       final ExecutionContext context) {
     context.getLogger().info("GetProducts | Starting get products function...");
-    List<Product> productList = getProducts(context.getLogger());
+
+    String warehousesParam = request.getQueryParameters().getOrDefault("warehouses", null);
+    System.out.println(warehousesParam);
+    if (warehousesParam != null && warehousesParam.equals("show")) {
+      return request
+          .createResponseBuilder(HttpStatus.OK)
+          .header("Content-Type", "application/json")
+          .body(JsonUtils.mapToJson(getWarehouses(context.getLogger())))
+          .build();
+    }
+
     return request
         .createResponseBuilder(HttpStatus.OK)
         .header("Content-Type", "application/json")
-        .body(JsonUtils.mapToJson(productList))
+        .body(JsonUtils.mapToJson(getProducts(context.getLogger())))
         .build();
   }
 
@@ -45,5 +56,16 @@ public class HttpTriggerFunction {
       logger.info("Error establishing SQL connection:" + ex.getMessage());
     }
     return productList;
+  }
+
+  private List<Bodega> getWarehouses(Logger logger) {
+    List<Bodega> warehouseList = new ArrayList<>();
+    try {
+      ProductsRepository productsRepository = new ProductsRepository();
+      warehouseList = productsRepository.getWarehouses();
+    } catch (SQLException ex) {
+      logger.info("Error establishing SQL connection:" + ex.getMessage());
+    }
+    return warehouseList;
   }
 }

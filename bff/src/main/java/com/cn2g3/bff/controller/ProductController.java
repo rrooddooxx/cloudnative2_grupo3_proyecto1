@@ -1,5 +1,6 @@
 package com.cn2g3.bff.controller;
 
+import com.cn2g3.bff.model.Bodega;
 import com.cn2g3.bff.model.NewProductDto;
 import com.cn2g3.bff.model.NewProductResponseDto;
 import com.cn2g3.bff.model.Product;
@@ -21,35 +22,40 @@ import reactor.core.publisher.Mono;
 
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("/api/v1/inventory/products")
+@RequestMapping("/api/v1/inventory")
 public class ProductController {
 
   private final ProductService productService;
 
-  @GetMapping
+  @GetMapping("/warehouses")
+  public Mono<ResponseEntity<Flux<Bodega>>> getWarehouses() {
+    return productService.getWarehouses();
+  }
+
+  @GetMapping("/products")
   public Mono<ResponseEntity<Flux<Product>>> getProducts() {
     return productService.getProducts();
   }
 
-  @GetMapping("/{id}")
+  @GetMapping("/products/{id}")
   public Mono<ResponseEntity<Flux<Product>>> getProductById(@PathVariable("id") String productId) {
     return productService.getProductById(productId);
   }
 
-  @PostMapping("/add")
+  @PostMapping("/products/add")
   public Mono<ResponseEntity<Mono<NewProductResponseDto>>> addProduct(
       @RequestBody() NewProductDto newProductDto) {
     return productService.addProduct(newProductDto);
   }
 
-  @PatchMapping("/update-price/{id}")
+  @PatchMapping("/products/update-price/{id}")
   public ResponseEntity<Map<String, String>> updateProductPrice(
       @PathVariable("id") String productId,
       @RequestBody() UpdateProductPriceRequestDto updateProductPriceDto) {
     return productService.updateProductPrice(productId, updateProductPriceDto);
   }
 
-  @DeleteMapping("/{id}")
+  @DeleteMapping("/products/{id}")
   public ResponseEntity<Map<String, String>> deleteProductById(
       @PathVariable("id") Optional<String> id) {
     if (id.isEmpty()) {

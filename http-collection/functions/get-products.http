@@ -1,5 +1,5 @@
-### GET get-products
+### GET obtener productos (incluye bodega x producto)
 GET {{host_fn1}}/api/get-products
 
-
-###
+### GET obtener bodegas
+GET {{host_fn1}}/api/get-products?warehouses=show

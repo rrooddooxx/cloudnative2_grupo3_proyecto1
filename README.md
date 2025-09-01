@@ -42,8 +42,11 @@ A continuación se describen los endpoints expuestos tanto por el BFF como por l
 
 Estos son los endpoints que una aplicación cliente debe consumir.
 
+- `GET /api/v1/inventory/warehouses`
+    - **Descripción**: Obtiene la lista completa de bodegas y su cantidad de productos.
+
 - `GET /api/v1/inventory/products`
-    - **Descripción**: Obtiene la lista completa de productos.
+    - **Descripción**: Obtiene la lista completa de productos y sus bodegas asociadas.
 
 - `GET /api/v1/inventory/products/{id}`
     - **Descripción**: Obtiene un único producto según su `id`.

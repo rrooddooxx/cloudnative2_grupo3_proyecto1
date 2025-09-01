@@ -1,5 +1,6 @@
 package com.cn2g3.bff.controller;
 
+import com.cn2g3.bff.model.Bodega;
 import com.cn2g3.bff.model.NewProductDto;
 import com.cn2g3.bff.model.NewProductResponseDto;
 import com.cn2g3.bff.model.Product;
@@ -23,6 +24,11 @@ import reactor.core.publisher.Mono;
 @Slf4j
 public class ProductService {
   private final ProductWebService productWebService;
+
+  public Mono<ResponseEntity<Flux<Bodega>>> getWarehouses() {
+    Flux<Bodega> products = productWebService.getWarehouses();
+    return Mono.just(ResponseEntity.ok(products));
+  }
 
   public Mono<ResponseEntity<Flux<Product>>> getProducts() {
     Flux<Product> products = productWebService.getAllProducts();
