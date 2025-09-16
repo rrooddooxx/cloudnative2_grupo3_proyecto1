@@ -5,7 +5,7 @@ GET {{host_bff}}/api/v1/inventory/warehouses
 GET {{host_bff}}/api/v1/inventory/products
 
 ### GET obtener producto por id
-GET {{host_bff}}/api/v1/inventory/products/30d69194-4353-4709-908c-24d6ad288656
+GET {{host_bff}}/api/v1/inventory/products/793a06bb-0f64-4163-bee5-5e35224f64c3
 
 ### POST crear nuevo producto
 POST {{host_bff}}/api/v1/inventory/products/add
@@ -13,19 +13,19 @@ Content-Type: application/json
 
 {
   "marca": "Soprole",
-  "nombreProducto": "Yogurt Frutilla 120g",
-  "precio": 230,
+  "nombreProducto": "Yogurt Chirimoya 120g",
+  "precio": 420,
   "categoria": "b385b7f2-a2d9-4f9f-bccc-e27f54f3a2e2",
   "bodegaId": "6dcb7901-3f4e-41a2-9d07-2e3f4b5c6d7e"
 }
 
 ### PATCH editar precio de un producto por id
-PATCH {{host_bff}}/api/v1/inventory/products/update-price/aa4965d3-c4b1-4202-a5c1-3d432a250dd6
+PATCH {{host_bff}}/api/v1/inventory/products/update-price/3881c68d-cd8a-4b39-b2ef-8e35db10018e
 Content-Type: application/json
 
 {
-  "precio": 260
+  "precio": 410
 }
 
 ### DELETE eliminar producto por id
-DELETE {{host_bff}}/api/v1/inventory/products/aa4965d3-c4b1-4202-a5c1-3d432a250dd6
+DELETE {{host_bff}}/api/v1/inventory/products/3881c68d-cd8a-4b39-b2ef-8e35db10018e

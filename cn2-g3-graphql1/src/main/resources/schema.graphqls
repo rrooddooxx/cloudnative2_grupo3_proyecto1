@@ -1,0 +1,45 @@
+type Product {
+    id: ID!
+    marca: String
+    nombreProducto: String
+    precio: Int
+    categoria: String
+    nombreBodega: String
+}
+
+input InputNewProduct {
+    marca: String!
+    nombreProducto: String!
+    precio: Int!
+    categoria: String!
+    bodegaId: String!
+}
+
+input InputUpdateProductPrice {
+    id: ID!
+    precio: Int!
+}
+
+type AddProductResponse {
+    id: ID
+    error: String
+}
+
+type UpdateProductResponse {
+    success: Boolean!
+    error: String
+}
+
+type Mutation {
+    addProduct(product: InputNewProduct!): AddProductResponse
+    updateProductPrice(input: InputUpdateProductPrice!): UpdateProductResponse
+}
+
+type Query {
+    products(id: ID, name: String, marca: String, category: String, nombreBodega: String): [Product]
+}
+
+schema {
+    query: Query
+    mutation: Mutation
+}

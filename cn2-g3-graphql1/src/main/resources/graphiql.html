@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <title>GraphiQL</title>
+  <link href="https://unpkg.com/graphiql/graphiql.min.css" rel="stylesheet" />
+  <script src="https://unpkg.com/react@17/umd/react.production.min.js"></script>
+  <script src="https://unpkg.com/react-dom@17/umd/react-dom.production.min.js"></script>
+  <script src="https://unpkg.com/graphiql/graphiql.min.js"></script>
+</head>
+<body style="margin: 0;">
+  <div id="graphiql" style="height: 100vh;"></div>
+  <script>
+    ReactDOM.render(
+      React.createElement(GraphiQL, {
+        fetcher: GraphiQL.createFetcher({
+          url: '/api/graphql',
+        }),
+        defaultQuery: '# Welcome to GraphiQL\n\n# You can write your queries and mutations here.\n# Press the play button to execute them.\n\nquery GetProducts {\n  products(marca: \"Apple\") {\n    id\n    nombreProducto\n    marca\n    precio\n    categoria\n    nombreBodega\n  }\n}\n',
+        headerEditorEnabled: true,
+        shouldPersistHeaders: true,
+      }),
+      document.getElementById('graphiql')
+    );
+  </script>
+</body>
+</html>

@@ -1,0 +1,44 @@
+plugins {
+    id "com.microsoft.azure.azurefunctions" version "1.12.0"
+}
+apply plugin: "java"
+
+group 'com.cn2g4'
+version '1.0.1-SNAPSHOT'
+
+dependencies {
+    implementation 'com.microsoft.azure.functions:azure-functions-java-library:3.0.0'
+    implementation("com.graphql-java:graphql-java:24.2")
+    implementation("com.zaxxer:HikariCP:7.0.2")
+    implementation("org.postgresql:postgresql:42.7.7")
+    implementation("com.fasterxml.jackson.core:jackson-databind:2.20.0")
+    implementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.20.0")
+    implementation("com.fasterxml.jackson.datatype:jackson-datatype-jdk8:2.20.0")
+    implementation("org.projectlombok:lombok:1.18.40")
+    implementation 'org.slf4j:slf4j-simple:1.7.32'
+    testImplementation 'org.mockito:mockito-core:2.23.4'
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.4.2'
+}
+
+sourceCompatibility = '17'
+targetCompatibility = '17'
+
+repositories {
+    mavenCentral()
+}
+
+azurefunctions {
+    // subscription = '<your subscription id>'
+    resourceGroup = 'java-functions-group'
+    appName = 'cn2-g3-graphql1-1757977673642' // please rename the function name
+    pricingTier = 'Consumption'
+    // refers https://github.com/microsoft/azure-maven-plugins/tree/develop/azure-functions-maven-plugin#supported-pricing-tiers for all valid values
+    region = 'westus'
+    runtime {
+        os = 'windows'
+    }
+    // appSettings {
+    //    key = 'value'
+    // }
+    // localDebug = "transport=dt_socket,server=y,suspend=n,address=5005"
+}
