@@ -1,0 +1,8 @@
+### GET request to example server
+POST http://localhost:51099/api/graphql
+Content-Type: application/json
+
+{"query":"query GetProducts {     products     { \n      id \n        nombreProducto\n        marca\n        categoria\n        nombreBodega\n    } \n}\n",
+  "variables":{}}
+
+###
