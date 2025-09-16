@@ -1,7 +1,0 @@
-{
-  "IsEncrypted": false,
-  "Values": {
-    "DEPLOYMENT_STORAGE_CONNECTION_STRING": "DefaultEndpointsProtocol=https;AccountName=dcloudnative2grupo08e3a;AccountKey=87CLJpKgX1MTZsCAZ7ueGwsbcx8GngsPeRvLi4u5arGuvzAOOnwt7ZI2IYDqAM3Q8dqMRZRdDrFm+AStM2dcZA==;EndpointSuffix=core.windows.net",
-    "AzureWebJobsStorage": "DefaultEndpointsProtocol=https;AccountName=dcloudnative2grupo08e3a;AccountKey=87CLJpKgX1MTZsCAZ7ueGwsbcx8GngsPeRvLi4u5arGuvzAOOnwt7ZI2IYDqAM3Q8dqMRZRdDrFm+AStM2dcZA==;EndpointSuffix=core.windows.net"
-  }
-}
