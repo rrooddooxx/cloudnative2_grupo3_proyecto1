@@ -1,71 +1,75 @@
 package com.cn2g3;
 
-import com.cn2g3.product.model.Bodega;
-import com.cn2g3.product.model.Product;
-import com.cn2g3.product.repository.ProductsRepository;
-import com.cn2g3.utils.JsonUtils;
-import com.microsoft.azure.functions.ExecutionContext;
-import com.microsoft.azure.functions.HttpMethod;
-import com.microsoft.azure.functions.HttpRequestMessage;
-import com.microsoft.azure.functions.HttpResponseMessage;
-import com.microsoft.azure.functions.HttpStatus;
-import com.microsoft.azure.functions.annotation.AuthorizationLevel;
-import com.microsoft.azure.functions.annotation.FunctionName;
-import com.microsoft.azure.functions.annotation.HttpTrigger;
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import com.microsoft.azure.functions.*;
+import com.microsoft.azure.functions.annotation.*;
+import java.util.*;
 import java.util.logging.Logger;
+import java.sql.SQLException;
 
+import com.cn2g3.product.repository.ProductsRepository;
+import com.cn2g3.product.model.Product;
+import com.cn2g3.product.model.Bodega;
+
+/**
+ * GET /api/get-products
+ * Query params soportados:
+ *   - ?search=texto
+ *   - ?limit=50  (1..500)
+ *   - ?offset=0  (>=0)
+ *   - ?warehouses=show  (si se pasa, lista bodegas en vez de productos)
+ */
 public class HttpTriggerFunction {
 
   @FunctionName("get-products")
   public HttpResponseMessage run(
-      @HttpTrigger(
-              name = "req",
-              methods = {HttpMethod.GET},
-              authLevel = AuthorizationLevel.ANONYMOUS)
-          HttpRequestMessage<Optional<String>> request,
+      @HttpTrigger(name = "req", methods = {HttpMethod.GET}, authLevel = AuthorizationLevel.ANONYMOUS,
+                   route = "get-products") HttpRequestMessage<Optional<String>> request,
       final ExecutionContext context) {
-    context.getLogger().info("GetProducts | Starting get products function...");
 
-    String warehousesParam = request.getQueryParameters().getOrDefault("warehouses", null);
-    System.out.println(warehousesParam);
-    if (warehousesParam != null && warehousesParam.equals("show")) {
-      return request
-          .createResponseBuilder(HttpStatus.OK)
-          .header("Content-Type", "application/json")
-          .body(JsonUtils.mapToJson(getWarehouses(context.getLogger())))
-          .build();
+    Logger logger = context.getLogger();
+    try {
+      String search = request.getQueryParameters().getOrDefault("search", "");
+      int limit  = parseInt(request.getQueryParameters().get("limit"), 50, 1, 500);
+      int offset = parseInt(request.getQueryParameters().get("offset"), 0, 0, 100000);
+      String warehousesParam = request.getQueryParameters().getOrDefault("warehouses", null);
+
+      ProductsRepository repo = new ProductsRepository();
+
+      if ("show".equalsIgnoreCase(warehousesParam)) {
+        List<Bodega> data = repo.getWarehouses(search, limit, offset);
+        return json(request, 200, data);
+      } else {
+        List<Product> data = repo.getProducts(search, limit, offset);
+        return json(request, 200, data);
+      }
+
+    } catch (IllegalArgumentException bad) {
+      return json(request, 400, Map.of("error", bad.getMessage()));
+    } catch (SQLException ex) {
+      logger.severe("SQL error: " + ex.getMessage());
+      return json(request, 500, Map.of("error", "Error de base de datos"));
+    } catch (Exception e) {
+      logger.severe("GET PRODUCTS error: " + e);
+      return json(request, 500, Map.of("error", "Error interno"));
     }
-
-    return request
-        .createResponseBuilder(HttpStatus.OK)
-        .header("Content-Type", "application/json")
-        .body(JsonUtils.mapToJson(getProducts(context.getLogger())))
-        .build();
   }
 
-  private List<Product> getProducts(Logger logger) {
-    List<Product> productList = new ArrayList<>();
+  private static int parseInt(String val, int def, int min, int max) {
+    if (val == null || val.isBlank()) return def;
     try {
-      ProductsRepository productsRepository = new ProductsRepository();
-      productList = productsRepository.getProducts();
-    } catch (SQLException ex) {
-      logger.info("Error establishing SQL connection:" + ex.getMessage());
+      int n = Integer.parseInt(val);
+      if (n < min || n > max) throw new IllegalArgumentException("Parámetro fuera de rango");
+      return n;
+    } catch (NumberFormatException nfe) {
+      throw new IllegalArgumentException("Parámetro inválido");
     }
-    return productList;
   }
 
-  private List<Bodega> getWarehouses(Logger logger) {
-    List<Bodega> warehouseList = new ArrayList<>();
-    try {
-      ProductsRepository productsRepository = new ProductsRepository();
-      warehouseList = productsRepository.getWarehouses();
-    } catch (SQLException ex) {
-      logger.info("Error establishing SQL connection:" + ex.getMessage());
-    }
-    return warehouseList;
+  private HttpResponseMessage json(HttpRequestMessage<?> req, int status, Object body) {
+    return req.createResponseBuilder(HttpStatus.valueOf(status))
+      .header("Content-Type", "application/json")
+      .header("Cache-Control", "no-store")
+      .body(body)
+      .build();
   }
 }

@@ -1,0 +1,17 @@
+type Query {
+  products(search: String, limit: Int = 50, offset: Int = 0): [Product!]!
+  product(id: ID!): Product
+  bodegas(limit: Int = 50, offset: Int = 0): [Bodega!]!
+  bodega(id: ID!): Bodega
+}
+
+type Product {
+  id: ID!
+  nombre: String!
+  precio: Float!
+}
+
+type Bodega {
+  id: ID!
+  nombre: String!
+}
