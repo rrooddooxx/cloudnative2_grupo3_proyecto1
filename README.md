@@ -34,7 +34,7 @@ para completar la tarea, las funciones ejecutan sentencias SQL sobre la BBDD.
 
 ---
 
-## Endpoints del BFF
+## Endpoints
 
 A continuación se describen los endpoints expuestos tanto por el BFF como por las Azure Functions.
 
@@ -60,7 +60,7 @@ Estos son los endpoints que una aplicación cliente debe consumir.
 - `DELETE /api/v1/inventory/products/{id}`
     - **Descripción**: Elimina un producto del inventario usando su `id`.
 
-### 2. Azure Functions
+### 2. Azure Functions (REST)
 
 Estas funciones son convocadas por el BFF. Estas funciones proveen de una abstracción para
 hablar con la Base de Datos (Postgres DB)
@@ -81,6 +81,23 @@ hablar con la Base de Datos (Postgres DB)
     - `DELETE /api/delete-product/{productId}`
         - **Descripción**: Elimina un producto específico según su `productId`.
         - **Proyecto**: `cn2-g3-crudfn-3`
+
+### 3. GraphQL Function
+
+Esta función expone un endpoint GraphQL que permite realizar consultas y mutaciones sobre los productos.
+
+- **CN2-G3-GRAPHQL1:**
+    - `POST /api/graphql`
+        - **Descripción**: Endpoint único para todas las operaciones GraphQL.
+        - **Proyecto**: `cn2-g3-graphql1`
+        - **Query**:
+            - `products(id: ID, name: String, marca: String, category: String, nombreBodega: String): [Product]`
+                - **Descripción**: Obtiene una lista de productos. Puede ser filtrada por `id`, `name`, `marca`, `category`, o `nombreBodega`.
+        - **Mutations**:
+            - `addProduct(product: InputNewProduct!): AddProductResponse`
+                - **Descripción**: Agrega un nuevo producto al inventario.
+            - `updateProductPrice(input: InputUpdateProductPrice!): UpdateProductResponse`
+                - **Descripción**: Actualiza el precio de un producto existente.
 
 ---
 
