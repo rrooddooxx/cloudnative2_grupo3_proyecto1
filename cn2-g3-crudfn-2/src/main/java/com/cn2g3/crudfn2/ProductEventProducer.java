@@ -50,28 +50,18 @@ public class ProductEventProducer {
   }
 
   private static Map<ProductEventProperties, String> getProductAddedCredentials() {
-    var eventGridTopicEndpoint =
-        "https://productoagregado.eastus2-1.eventgrid.azure.net/api/events";
-    var eventGridTopicKey =
-        "5UdIvmNlNOeLbqvyWkgqVOg2Ej452bE5c6gmR5CVdIZTONfeqE4vJQQJ99BJACHYHv6XJ3w3AAABAZEGr2Fm";
-
     return Map.of(
         ProductEventProperties.ENDPOINT,
-        eventGridTopicEndpoint,
+        System.getenv("TopicProductAddedEndpoint"),
         ProductEventProperties.KEY,
-        eventGridTopicKey);
+        System.getenv("TopicProductAddedKey"));
   }
 
   private static Map<ProductEventProperties, String> getProductUpdatedCredentials() {
-    var eventGridTopicEndpoint =
-        "https://productoactualizado.eastus2-1.eventgrid.azure.net/api/events";
-    var eventGridTopicKey =
-        "3VfP52kg95r8LJds1lY1TGJ2dGi2H0CdJlHBs4lzZ3MIukmw8gINJQQJ99BJACHYHv6XJ3w3AAABAZEGWOLi";
-
     return Map.of(
         ProductEventProperties.ENDPOINT,
-        eventGridTopicEndpoint,
+        System.getenv("TopicProductUpdatedEndpoint"),
         ProductEventProperties.KEY,
-        eventGridTopicKey);
+        System.getenv("TopicProductUpdatedKey"));
   }
 }
