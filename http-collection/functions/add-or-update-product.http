@@ -11,13 +11,6 @@ Content-Type: "application/json"
 }
 
 
-### POST update product
-POST {{host_fn2}}/api/update-product?action=update
-Content-Type: "application/json"
-
-{
-    "id": "dee7f24e-425f-4557-a900-bdb3d36131c9",
-    "precio": 998
-}
+Z
 
 ###
