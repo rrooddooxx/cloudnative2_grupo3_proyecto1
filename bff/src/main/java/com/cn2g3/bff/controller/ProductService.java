@@ -2,7 +2,6 @@ package com.cn2g3.bff.controller;
 
 import com.cn2g3.bff.model.Bodega;
 import com.cn2g3.bff.model.NewProductDto;
-import com.cn2g3.bff.model.NewProductResponseDto;
 import com.cn2g3.bff.model.Product;
 import com.cn2g3.bff.model.UpdateProductPrice;
 import com.cn2g3.bff.model.UpdateProductPriceRequestDto;
@@ -42,9 +41,9 @@ public class ProductService {
             products.filter(product -> product.id().equals(UUID.fromString(productId)))));
   }
 
-  public Mono<ResponseEntity<Mono<NewProductResponseDto>>> addProduct(NewProductDto newProductDto) {
-    Mono<NewProductResponseDto> newProduct = productWebService.addNewProduct(newProductDto);
-    return Mono.just(ResponseEntity.ok(newProduct));
+  public ResponseEntity<Map<String, String>> addProduct(NewProductDto newProductDto) {
+    Mono<HttpStatusCode> newProduct = productWebService.addNewProduct(newProductDto);
+    return getMapResponseEntity(newProduct);
   }
 
   public ResponseEntity<Map<String, String>> updateProductPrice(
@@ -67,7 +66,10 @@ public class ProductService {
     Map<String, String> responseBody =
         Map.of(
             "status",
-            status.filter(HttpStatusCode::is2xxSuccessful).map(s -> "OK!").orElse("Error!"));
+            status
+                .filter(HttpStatusCode::is2xxSuccessful)
+                .map(s -> "Evento de operación recibido correctamente!")
+                .orElse("Error!"));
 
     log.info("Update/Delete Response status: {}", status.orElse(HttpStatus.UNPROCESSABLE_ENTITY));
     return ResponseEntity.status(status.orElse(HttpStatus.INTERNAL_SERVER_ERROR))

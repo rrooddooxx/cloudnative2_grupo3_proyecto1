@@ -16,7 +16,7 @@ POST {{host_fn2}}/api/update-product?action=update
 Content-Type: "application/json"
 
 {
-    "id": "5f019d12-af19-41ea-bba1-080b8a4317bd",
+    "id": "dee7f24e-425f-4557-a900-bdb3d36131c9",
     "precio": 998
 }
 

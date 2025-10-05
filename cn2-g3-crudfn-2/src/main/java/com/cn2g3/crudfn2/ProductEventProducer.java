@@ -7,13 +7,14 @@ import com.azure.messaging.eventgrid.EventGridPublisherClient;
 import com.azure.messaging.eventgrid.EventGridPublisherClientBuilder;
 import com.cn2g3.crudfn2.product.model.NewProductDto;
 import com.cn2g3.crudfn2.product.model.UpdateProductProductPriceDto;
+import java.io.IOException;
 import java.util.Map;
 
 public class ProductEventProducer {
 
   private ProductEventProducer() {}
 
-  public static void produceProductAddedEvent(NewProductDto dto) {
+  public static void produceProductAddedEvent(NewProductDto dto) throws IOException {
     var credentials = getProductAddedCredentials();
     EventGridPublisherClient<EventGridEvent> eventGridEventClient =
         new EventGridPublisherClientBuilder()
@@ -29,6 +30,7 @@ public class ProductEventProducer {
             "1.0");
 
     eventGridEventClient.sendEvent(event);
+    System.out.println("EVENTO ENVIADO!! %s".formatted(event.toJsonString()));
   }
 
   public static void produceProductUpdatedEvent(UpdateProductProductPriceDto dto) {
