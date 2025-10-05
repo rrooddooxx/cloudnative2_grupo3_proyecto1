@@ -1,10 +1,9 @@
 package com.cn2g3.crudfn2;
 
 import com.cn2g3.crudfn2.product.model.NewProductDto;
-import com.cn2g3.crudfn2.product.model.Product;
 import com.cn2g3.crudfn2.product.model.UpdateProductProductPriceDto;
-import com.cn2g3.crudfn2.product.repository.ProductsRepository;
 import com.cn2g3.crudfn2.utils.JsonUtils;
+import com.cn2g3.crudfn2.validations.HttpTriggerValidator;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.microsoft.azure.functions.*;
 import com.microsoft.azure.functions.annotation.*;
@@ -20,80 +19,77 @@ public class HttpTriggerFunction {
           HttpRequestMessage<Optional<String>> request,
       final ExecutionContext context) {
 
-    String action = request.getQueryParameters().getOrDefault("action", "add");
-    context
-        .getLogger()
-        .info("Add or Update Product | Starting request... Action: %s.".formatted(action));
-
-    if (!action.equals("add") && !action.equals("update")) {
-      context.getLogger().severe("Add or Update Product | Invalid Action: %s".formatted(action));
-      return request.createResponseBuilder(HttpStatus.BAD_REQUEST).build();
+    var action = request.getQueryParameters().getOrDefault("action", "add");
+    var invalidResponse = HttpTriggerValidator.validate(request, context, action);
+    if (invalidResponse != null) {
+      return invalidResponse.build();
     }
-
-    if (request.getBody().isEmpty()) {
-      context
-          .getLogger()
-          .severe(
-              "Add or Update Product | ERROR! Action: (%s) with no request body, Aborting..."
-                  .formatted(action));
-      return request.createResponseBuilder(HttpStatus.BAD_REQUEST).build();
-    }
-
-    ProductsRepository productsRepository = new ProductsRepository();
 
     if (action.equals("add") && request.getBody().isPresent()) {
-      try {
-        NewProductDto newProduct =
-            JsonUtils.mapToObject(request.getBody().get(), NewProductDto.class);
-
-        Optional<UUID> addedProductId =
-            productsRepository.addProduct(
-                Product.generateNew(
-                    newProduct.marca(),
-                    newProduct.nombreProducto(),
-                    newProduct.precio(),
-                    newProduct.categoria()),
-                newProduct.bodegaId());
-
-        return request
-            .createResponseBuilder(HttpStatus.CREATED)
-            .header("Content-Type", "application/json")
-            .body(
-                JsonUtils.mapToJson(
-                    addedProductId.isPresent()
-                        ? new HashMap<>(Map.of("id", addedProductId.get()))
-                        : new HashMap<>(
-                            Map.of("error", "No ID for added product. Check database"))))
-            .build();
-      } catch (JsonProcessingException ex) {
-        context
-            .getLogger()
-            .severe("Add Product | ERROR deserializing payload:  %s".formatted(ex.getMessage()));
-        return request.createResponseBuilder(HttpStatus.INTERNAL_SERVER_ERROR).build();
-      } catch (Exception ex) {
-        context.getLogger().severe("Add Product | Internal Error:  %s".formatted(ex.getMessage()));
-        return request.createResponseBuilder(HttpStatus.INTERNAL_SERVER_ERROR).build();
-      }
+      return handleAddProduct(request, context);
+    } else {
+      return handleUpdateProduct(request, context);
     }
+  }
 
+  private HttpResponseMessage handleAddProduct(
+      HttpRequestMessage<Optional<String>> request, ExecutionContext context) {
+    try {
+      NewProductDto newProduct =
+          JsonUtils.mapToObject(request.getBody().get(), NewProductDto.class);
+
+      ProductEventProducer.produceProductAddedEvent(newProduct);
+
+      return request
+          .createResponseBuilder(HttpStatus.CREATED)
+          .header("Content-Type", "application/json")
+          .body(
+              JsonUtils.mapToJson(
+                  new HashMap<>(Map.of("status", "Evento AGREGAR PRODUCTO enviado!"))))
+          .build();
+    } catch (JsonProcessingException ex) {
+      context
+          .getLogger()
+          .severe("Add Product | ERROR deserializing payload:  %s".formatted(ex.getMessage()));
+      return request.createResponseBuilder(HttpStatus.INTERNAL_SERVER_ERROR).build();
+    } catch (Exception ex) {
+      context.getLogger().severe("Add Product | Internal Error:  %s".formatted(ex.getMessage()));
+      return request
+          .createResponseBuilder(HttpStatus.INTERNAL_SERVER_ERROR)
+          .header("Content-Type", "application/json")
+          .body(JsonUtils.mapToJson(new HashMap<>(Map.of("error", ex.getMessage()))))
+          .build();
+    }
+  }
+
+  private HttpResponseMessage handleUpdateProduct(
+      HttpRequestMessage<Optional<String>> request, ExecutionContext context) {
     try {
       UpdateProductProductPriceDto updatedProduct =
           JsonUtils.mapToObject(request.getBody().get(), UpdateProductProductPriceDto.class);
-      boolean wasUpdated =
-          productsRepository.updateProductPriceById(updatedProduct.id(), updatedProduct.precio());
+
+      ProductEventProducer.produceProductUpdatedEvent(updatedProduct);
+
       return request
-          .createResponseBuilder(wasUpdated ? HttpStatus.CREATED : HttpStatus.EXPECTATION_FAILED)
+          .createResponseBuilder(HttpStatus.CREATED)
+          .header("Content-Type", "application/json")
+          .body(
+              JsonUtils.mapToJson(
+                  new HashMap<>(Map.of("status", "Evento ACTUALIZAR PRODUCTO enviado!"))))
           .build();
     } catch (JsonProcessingException ex) {
       context
           .getLogger()
           .severe("Update Product | ERROR deserializing payload:  %s".formatted(ex.getMessage()));
-      request.createResponseBuilder(HttpStatus.INTERNAL_SERVER_ERROR).build();
+      return request.createResponseBuilder(HttpStatus.INTERNAL_SERVER_ERROR).build();
     } catch (Exception ex) {
       context.getLogger().severe("Update Product | Internal Error:  %s".formatted(ex.getMessage()));
-      return request.createResponseBuilder(HttpStatus.INTERNAL_SERVER_ERROR).build();
+      return request
+          .createResponseBuilder(HttpStatus.INTERNAL_SERVER_ERROR)
+          .header("Content-Type", "application/json")
+          .body(JsonUtils.mapToJson(new HashMap<>(Map.of("error", ex.getMessage()))))
+          .build();
     }
-
-    return request.createResponseBuilder(HttpStatus.BAD_REQUEST).build();
   }
+  
 }
