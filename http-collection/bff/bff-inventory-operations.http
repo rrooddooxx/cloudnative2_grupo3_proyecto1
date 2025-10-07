@@ -13,18 +13,18 @@ Content-Type: application/json
 
 {
   "marca": "Soprole",
-  "nombreProducto": "Yogurt Chirimoya 120g",
-  "precio": 420,
+  "nombreProducto": "Leche Kefir Chirimoya 1.8L",
+  "precio": 1900,
   "categoria": "b385b7f2-a2d9-4f9f-bccc-e27f54f3a2e2",
   "bodegaId": "6dcb7901-3f4e-41a2-9d07-2e3f4b5c6d7e"
 }
 
 ### PATCH editar precio de un producto por id
-PATCH {{host_bff}}/api/v1/inventory/products/update-price/3881c68d-cd8a-4b39-b2ef-8e35db10018e
+PATCH {{host_bff}}/api/v1/inventory/products/update-price/dee7f24e-425f-4557-a900-bdb3d36131c9
 Content-Type: application/json
 
 {
-  "precio": 410
+  "precio": 2999
 }
 
 ### DELETE eliminar producto por id

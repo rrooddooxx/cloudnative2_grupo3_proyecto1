@@ -2,7 +2,6 @@ package com.cn2g3.bff.controller;
 
 import com.cn2g3.bff.model.Bodega;
 import com.cn2g3.bff.model.NewProductDto;
-import com.cn2g3.bff.model.NewProductResponseDto;
 import com.cn2g3.bff.model.Product;
 import com.cn2g3.bff.model.UpdateProductPriceRequestDto;
 import java.util.Map;
@@ -43,7 +42,7 @@ public class ProductController {
   }
 
   @PostMapping("/products/add")
-  public Mono<ResponseEntity<Mono<NewProductResponseDto>>> addProduct(
+  public ResponseEntity<Map<String, String>> addProduct(
       @RequestBody() NewProductDto newProductDto) {
     return productService.addProduct(newProductDto);
   }

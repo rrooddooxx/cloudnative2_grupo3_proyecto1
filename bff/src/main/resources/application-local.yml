@@ -1,0 +1,7 @@
+spring:
+  application:
+    name: "bff"
+azure-functions:
+  fn1_host: "http://localhost:58983"
+  fn2_host: "http://localhost:54245"
+  fn3_host: "http://localhost:61877"

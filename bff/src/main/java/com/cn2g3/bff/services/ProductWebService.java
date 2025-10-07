@@ -3,7 +3,6 @@ package com.cn2g3.bff.services;
 import com.cn2g3.bff.config.BffConstants;
 import com.cn2g3.bff.model.Bodega;
 import com.cn2g3.bff.model.NewProductDto;
-import com.cn2g3.bff.model.NewProductResponseDto;
 import com.cn2g3.bff.model.Product;
 import com.cn2g3.bff.model.UpdateProductPrice;
 import lombok.RequiredArgsConstructor;
@@ -51,15 +50,14 @@ public class ProductWebService {
         .bodyToFlux(Product.class);
   }
 
-  public Mono<NewProductResponseDto> addNewProduct(NewProductDto newProductDto) {
+  public Mono<HttpStatusCode> addNewProduct(NewProductDto newProductDto) {
     return addOrUpdateProductsClient
         .post()
         .uri(BffConstants.FN2_UPDATE_PATH, BffConstants.FN2_ADD_ACTION)
         .bodyValue(newProductDto)
         .accept(MediaType.APPLICATION_JSON)
         .httpRequest(this::logRequest)
-        .retrieve()
-        .bodyToMono(NewProductResponseDto.class);
+        .exchangeToMono(clientResponse -> Mono.just(clientResponse.statusCode()));
   }
 
   public Mono<HttpStatusCode> updateProduct(UpdateProductPrice updatedProduct) {

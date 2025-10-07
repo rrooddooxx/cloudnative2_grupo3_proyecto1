@@ -6,14 +6,18 @@ apply plugin: "java"
 group 'com.cn2g3'
 version '1.0.0-SNAPSHOT'
 
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(17)
+    }
+}
+
 dependencies {
     compileOnly("org.projectlombok:lombok:1.18.42")
     annotationProcessor("org.projectlombok:lombok:1.18.42")
     implementation 'com.microsoft.azure.functions:azure-functions-java-library:3.0.0'
     implementation("com.zaxxer:HikariCP:7.0.2")
     implementation("org.postgresql:postgresql:42.7.7")
-    implementation("com.azure:azure-core:1.56.1")
-    implementation("com.azure:azure-messaging-eventgrid:4.31.3")
     implementation("com.fasterxml.jackson.core:jackson-databind:2.20.0")
     implementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.20.0")
     implementation("com.fasterxml.jackson.datatype:jackson-datatype-jdk8:2.20.0")
@@ -30,12 +34,10 @@ repositories {
 
 azurefunctions {
     resourceGroup = 'DCLOUDNATIVE2-GRUPO03'
-    appName = 'cn2-g3-crudfn-3b'
+    appName = 'cn2-g3-event-crud-2'
     pricingTier = 'Dynamic'
     region = 'eastus2'
     runtime {
         os = 'windows'
     }
-  
 }
-

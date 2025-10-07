@@ -1,7 +1,7 @@
-package com.cn2g3.crudfn2.product.repository;
+package com.cn2g3.eventcrud2.product.repository;
 
-import com.cn2g3.crudfn2.infrastructure.DataSourceProvider;
 import com.cn2g3.crudfn2.product.model.Product;
+import com.cn2g3.eventcrud2.infrastructure.DataSourceProvider;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
