@@ -1,4 +1,4 @@
-package com.cn2g3.crudfn2.infrastructure;
+package com.cn2g3.eventcrud2.infrastructure;
 
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;

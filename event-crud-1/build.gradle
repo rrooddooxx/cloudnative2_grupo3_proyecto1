@@ -33,7 +33,6 @@ repositories {
 }
 
 azurefunctions {
-    // subscription = '<your subscription id>'
     resourceGroup = 'DCLOUDNATIVE2-GRUPO03'
     appName = 'cn2-g3-event-crud-1'
     pricingTier = 'Flex Consumption'
@@ -41,8 +40,5 @@ azurefunctions {
     runtime {
         os = 'linux'
     }
-    // appSettings {
-    //    key = 'value'
-    // }
-    // localDebug = "transport=dt_socket,server=y,suspend=n,address=5005"
+
 }
