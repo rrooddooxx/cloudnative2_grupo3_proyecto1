@@ -50,12 +50,14 @@ on p.categoria_id = c.id
 
     String deleteProductQuery =
         """
-        delete from producto where id = ?
+        delete from producto where id = ?;
+        delete from producto_bodega where producto_id = ?;
         """;
 
     try (Connection cnx = dataSource.getConnection();
         PreparedStatement ps = cnx.prepareStatement(deleteProductQuery)) {
       ps.setObject(1, UUID.fromString(productId));
+      ps.setObject(2, UUID.fromString(productId));
       int updated = ps.executeUpdate();
       return updated > 0;
     }

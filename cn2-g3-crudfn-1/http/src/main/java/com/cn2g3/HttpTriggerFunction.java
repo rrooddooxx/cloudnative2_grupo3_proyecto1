@@ -95,7 +95,7 @@ public class HttpTriggerFunction {
       var repo = getRepository();
 
       boolean successExecuted = repo.deleteWarehouses(warehouseId);
-      return json(request, 200, successExecuted ? "SUCCESS" : "NO_OP");
+      return json(request, successExecuted ? 200 : 400, successExecuted ? "SUCCESS" : "NO_OP");
 
     } catch (IllegalArgumentException bad) {
       return json(request, 400, Map.of("error", bad.getMessage()));

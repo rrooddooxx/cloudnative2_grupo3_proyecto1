@@ -44,7 +44,7 @@ public class ProductService {
 
   public ResponseEntity<Map<String, String>> addProduct(NewProductDto newProductDto) {
     Mono<HttpStatusCode> newProduct = productWebClient.addNewProduct(newProductDto);
-    return getMapResponseEntity(newProduct);
+    return getMapResponseEntity(newProduct, "Evento enviado correctamente!");
   }
 
   public ResponseEntity<Map<String, String>> updateProductPrice(
@@ -53,17 +53,17 @@ public class ProductService {
     UpdateProductPrice toUpdate = new UpdateProductPrice(productId, updateProductPriceDto.precio());
     log.info("Update request: {}", toUpdate);
     Mono<HttpStatusCode> responseStatus = productWebClient.updateProduct(toUpdate);
-    return getMapResponseEntity(responseStatus);
+    return getMapResponseEntity(responseStatus, "Evento enviado correctamente!");
   }
 
   public ResponseEntity<Map<String, String>> deleteProduct(String productId) {
     Mono<HttpStatusCode> responseStatus = productWebClient.deleteProduct(productId);
-    return getMapResponseEntity(responseStatus);
+    return getMapResponseEntity(responseStatus, "Evento enviado correctamente!");
   }
 
   public ResponseEntity<Map<String, String>> deleteWarehouse(String warehouseId) {
     Mono<HttpStatusCode> responseStatus = productWebClient.deleteWarehouse(warehouseId);
-    return getMapResponseEntity(responseStatus);
+    return getMapResponseEntity(responseStatus, "Operación ejecutada exitosamente!");
   }
 
   public Mono<JsonNode> executeProductQuery(String query) {
@@ -75,14 +75,14 @@ public class ProductService {
   }
 
   private ResponseEntity<Map<String, String>> getMapResponseEntity(
-      Mono<HttpStatusCode> responseStatus) {
+      Mono<HttpStatusCode> responseStatus, String successMessage) {
     Optional<HttpStatusCode> status = responseStatus.blockOptional();
     Map<String, String> responseBody =
         Map.of(
             "status",
             status
                 .filter(HttpStatusCode::is2xxSuccessful)
-                .map(s -> "Evento de operación recibido correctamente!")
+                .map(s -> successMessage)
                 .orElse("Error!"));
 
     log.info("Update/Delete Response status: {}", status.orElse(HttpStatus.UNPROCESSABLE_ENTITY));
