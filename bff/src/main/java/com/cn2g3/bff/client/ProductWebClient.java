@@ -1,10 +1,11 @@
-package com.cn2g3.bff.services;
+package com.cn2g3.bff.client;
 
 import com.cn2g3.bff.config.BffConstants;
 import com.cn2g3.bff.model.Bodega;
 import com.cn2g3.bff.model.NewProductDto;
 import com.cn2g3.bff.model.Product;
 import com.cn2g3.bff.model.UpdateProductPrice;
+import com.fasterxml.jackson.databind.JsonNode;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -19,10 +20,10 @@ import reactor.core.publisher.Mono;
 @Service
 @RequiredArgsConstructor
 @Slf4j
-public class ProductWebService {
+public class ProductWebClient {
 
   @Qualifier("crudFunction1Client")
-  private final WebClient getProductsClient;
+  private final WebClient getProductsOrWarehouseClient;
 
   @Qualifier("crudFunction2Client")
   private final WebClient addOrUpdateProductsClient;
@@ -30,8 +31,14 @@ public class ProductWebService {
   @Qualifier("crudFunction3Client")
   private final WebClient deleteProductsClient;
 
+  @Qualifier("graphql1Service")
+  private final WebClient productsQuery;
+
+  @Qualifier("graphql2Service")
+  private final WebClient priceMutation;
+
   public Flux<Bodega> getWarehouses() {
-    return getProductsClient
+    return getProductsOrWarehouseClient
         .get()
         .uri(BffConstants.FN1_GET_PRODUCTS, BffConstants.FN1_GET_PRODUCTS_ACTION_SHOW)
         .accept(MediaType.APPLICATION_JSON)
@@ -41,13 +48,21 @@ public class ProductWebService {
   }
 
   public Flux<Product> getAllProducts() {
-    return getProductsClient
+    return getProductsOrWarehouseClient
         .get()
         .uri(BffConstants.FN1_GET_PRODUCTS, BffConstants.FN1_GET_PRODUCTS_ACTION_HIDE)
         .accept(MediaType.APPLICATION_JSON)
         .httpRequest(this::logRequest)
         .retrieve()
         .bodyToFlux(Product.class);
+  }
+
+  public Mono<HttpStatusCode> deleteWarehouse(String warehouseId) {
+    return getProductsOrWarehouseClient
+        .delete()
+        .uri(BffConstants.FN1_DELETE_WAREHOUSE, warehouseId)
+        .httpRequest(this::logRequest)
+        .exchangeToMono(clientResponse -> Mono.just(clientResponse.statusCode()));
   }
 
   public Mono<HttpStatusCode> addNewProduct(NewProductDto newProductDto) {
@@ -75,6 +90,28 @@ public class ProductWebService {
         .uri(BffConstants.FN3_DELETE_PATH, productId)
         .httpRequest(this::logRequest)
         .exchangeToMono(clientResponse -> Mono.just(clientResponse.statusCode()));
+  }
+
+  public Mono<JsonNode> executeProductsQuery(String query) {
+    return productsQuery
+        .post()
+        .uri(BffConstants.GQL_PATH)
+        .contentType(MediaType.APPLICATION_JSON)
+        .bodyValue(query)
+        .httpRequest(this::logRequest)
+        .retrieve()
+        .bodyToMono(JsonNode.class);
+  }
+
+  public Mono<JsonNode> executePriceMutation(String query) {
+    return priceMutation
+        .post()
+        .uri(BffConstants.GQL_PATH)
+        .contentType(MediaType.APPLICATION_JSON)
+        .bodyValue(query)
+        .httpRequest(this::logRequest)
+        .retrieve()
+        .bodyToMono(JsonNode.class);
   }
 
   private void logRequest(ClientHttpRequest req) {

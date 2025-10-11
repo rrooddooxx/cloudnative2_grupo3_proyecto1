@@ -9,4 +9,6 @@ public class AzureFunctionsProperties {
   private String fn1Host;
   private String fn2Host;
   private String fn3Host;
+  private String graphql1Host;
+  private String graphql2Host;
 }

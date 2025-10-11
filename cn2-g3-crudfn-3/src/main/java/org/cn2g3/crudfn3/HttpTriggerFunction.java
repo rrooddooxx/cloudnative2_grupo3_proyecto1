@@ -7,7 +7,7 @@ import java.util.*;
 
 public class HttpTriggerFunction {
   @FunctionName("delete-product")
-  public HttpResponseMessage run(
+  public HttpResponseMessage runDeleteProduct(
       @HttpTrigger(
               name = "req",
               methods = {HttpMethod.DELETE},

@@ -4,6 +4,7 @@ import com.cn2g3.bff.model.Bodega;
 import com.cn2g3.bff.model.NewProductDto;
 import com.cn2g3.bff.model.Product;
 import com.cn2g3.bff.model.UpdateProductPriceRequestDto;
+import com.cn2g3.bff.services.ProductService;
 import java.util.Map;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
@@ -26,7 +27,7 @@ public class ProductController {
 
   private final ProductService productService;
 
-  @GetMapping("/warehouses")
+  @GetMapping("/warehouse")
   public Mono<ResponseEntity<Flux<Bodega>>> getWarehouses() {
     return productService.getWarehouses();
   }
@@ -61,5 +62,14 @@ public class ProductController {
       return ResponseEntity.badRequest().build();
     }
     return productService.deleteProduct(id.get());
+  }
+
+  @DeleteMapping("/warehouse/{id}")
+  public ResponseEntity<Map<String, String>> deleteWarehouseById(
+      @PathVariable("id") Optional<String> id) {
+    if (id.isEmpty()) {
+      return ResponseEntity.badRequest().build();
+    }
+    return productService.deleteWarehouse(id.get());
   }
 }

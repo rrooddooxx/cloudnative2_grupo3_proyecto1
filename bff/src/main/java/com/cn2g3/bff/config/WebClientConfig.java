@@ -38,4 +38,22 @@ public class WebClientConfig {
         .defaultHeader(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE)
         .build();
   }
+
+  @Bean
+  public WebClient graphql1Service(WebClient.Builder builder) {
+    return builder
+        .baseUrl(properties.getGraphql1Host())
+        .defaultHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+        .defaultHeader(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE)
+        .build();
+  }
+
+  @Bean
+  public WebClient graphql2Service(WebClient.Builder builder) {
+    return builder
+        .baseUrl(properties.getGraphql1Host())
+        .defaultHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+        .defaultHeader(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE)
+        .build();
+  }
 }

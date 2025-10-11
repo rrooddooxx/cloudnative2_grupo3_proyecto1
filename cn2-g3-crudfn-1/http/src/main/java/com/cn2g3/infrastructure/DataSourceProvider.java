@@ -2,7 +2,6 @@ package com.cn2g3.infrastructure;
 
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
-
 import javax.sql.DataSource;
 
 public final class DataSourceProvider {
@@ -22,7 +21,9 @@ public final class DataSourceProvider {
           String user = System.getenv("PostgresSupabaseCnxUser");
           String pass = System.getenv("PostgresSupabaseCnxPass");
           String cnxUrl =
-              String.format("jdbc:postgresql://%s:%s/postgres?sslmode=require", host, port);
+              String.format(
+                  "jdbc:postgresql://%s:%s/postgres?sslmode=require&prepareThreshold=0&preparedStatementCacheQueries=0&preparedStatementCacheSizeMiB=0",
+                  host, port);
 
           hikariConfig.setJdbcUrl(cnxUrl);
           hikariConfig.setUsername(user);
@@ -36,7 +37,13 @@ public final class DataSourceProvider {
           hikariConfig.setConnectionTimeout(10_000);
           hikariConfig.setIdleTimeout(60_000);
           hikariConfig.setMaxLifetime(600_000);
+          hikariConfig.setLeakDetectionThreshold(40_000);
           hikariConfig.setAutoCommit(true);
+
+          hikariConfig.setConnectionTestQuery("SELECT 1");
+          hikariConfig.addDataSourceProperty("cachePrepStmts", "false");
+
+          hikariConfig.setConnectionInitSql("DEALLOCATE ALL");
 
           hikariDataSource = localDataSource = new HikariDataSource(hikariConfig);
         }
